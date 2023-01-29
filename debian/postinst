@@ -82,11 +82,12 @@ case "$1" in
         # and this breaks startup script
         sed -i 's/\$JVB_EXTRA_JVM_PARAMS//g' $CONFIG
 
-        if ! grep -q "org.ice4j.ice.harvest.STUN_MAPPING_HARVESTER_ADDRESSES" "$NEW_JITSI_CONFIG" \
-          && ! grep -q "org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS" "$NEW_JITSI_CONFIG" ;then
-            echo "org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true" >> $NEW_JITSI_CONFIG
-            echo "org.ice4j.ice.harvest.STUN_MAPPING_HARVESTER_ADDRESSES=meet-jit-si-turnrelay.jitsi.net:443" >> $NEW_JITSI_CONFIG
-        fi
+        # DouDOU_d 暂时注释，不适用STUN服务
+        # if ! grep -q "org.ice4j.ice.harvest.STUN_MAPPING_HARVESTER_ADDRESSES" "$NEW_JITSI_CONFIG" \
+        #   && ! grep -q "org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS" "$NEW_JITSI_CONFIG" ;then
+        #     echo "org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true" >> $NEW_JITSI_CONFIG
+        #     echo "org.ice4j.ice.harvest.STUN_MAPPING_HARVESTER_ADDRESSES=meet-jit-si-turnrelay.jitsi.net:443" >> $NEW_JITSI_CONFIG
+        # fi
 
         if ! grep -q "org.jitsi.videobridge.xmpp.user.shard.MUC_JIDS" "$NEW_JITSI_CONFIG" ;then
             echo "org.jitsi.videobridge.ENABLE_STATISTICS=true" >> $NEW_JITSI_CONFIG
@@ -94,9 +95,13 @@ case "$1" in
             echo "org.jitsi.videobridge.xmpp.user.shard.HOSTNAME=localhost" >> $NEW_JITSI_CONFIG
             echo "org.jitsi.videobridge.xmpp.user.shard.DOMAIN=auth.$JVB_HOSTNAME" >> $NEW_JITSI_CONFIG
             echo "org.jitsi.videobridge.xmpp.user.shard.USERNAME=jvb" >> $NEW_JITSI_CONFIG
-            echo "org.jitsi.videobridge.xmpp.user.shard.PASSWORD=$JVB_SECRET" >> $NEW_JITSI_CONFIG
+            # DouDOU_c xmpp使用固定密码
+            echo "org.jitsi.videobridge.xmpp.user.shard.PASSWORD=jvb123" >> $NEW_JITSI_CONFIG
+            # echo "org.jitsi.videobridge.xmpp.user.shard.PASSWORD=$JVB_SECRET" >> $NEW_JITSI_CONFIG
             echo "org.jitsi.videobridge.xmpp.user.shard.MUC_JIDS=JvbBrewery@internal.auth.$JVB_HOSTNAME" >> $NEW_JITSI_CONFIG
             echo "org.jitsi.videobridge.xmpp.user.shard.MUC_NICKNAME=$(uuidgen)" >> $NEW_JITSI_CONFIG
+            # DouDOU_a 暂时关闭xmpp连接证书校验
+            echo "org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true" >> $NEW_JITSI_CONFIG
         fi
 
         if [ ! -f $HOCON_CONFIG ]; then

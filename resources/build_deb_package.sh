@@ -44,15 +44,18 @@ fi
 echo "Package version: ${VERSION}"
 
 REV=$(git log --pretty=format:'%h' -n 1)
-dch -v "$VERSION-1" "Build from git. $REV"
-dch -D unstable -r ""
+# DouDOU_d 暂时注释
+# dch -v "$VERSION-1" "Build from git. $REV"
+# dch -D unstable -r ""
 
 # sets the version in the pom file so it will propagate to resulting jar
 mvn versions:set -DnewVersion="${VERSION}"
 
 # We need to make sure all dependencies are downloaded before start building
 # the debian package
-mvn package
+# -DskipTests 不执行测试用例，但编译测试用例类生成相应的class文件至target/test-classes下
+# -Dmaven.test.skip=true 不执行测试用例，也不编译测试用例类。
+mvn package -Dmaven.test.skip=true
 
 # now build the deb
 dpkg-buildpackage -tc -us -uc -A
