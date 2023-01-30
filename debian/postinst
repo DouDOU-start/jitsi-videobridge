@@ -104,12 +104,18 @@ case "$1" in
             echo "org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true" >> $NEW_JITSI_CONFIG
         fi
 
+# DouDOU_a 增加sctp配置，在生产环境中开启sctp协议
         if [ ! -f $HOCON_CONFIG ]; then
             echo "Generating an empty hocon config"
             echo "videobridge {
     http-servers {
         public {
             port = 9090
+        }
+    }
+    {
+        sctp {
+            enabled = true
         }
     }
     websockets {
