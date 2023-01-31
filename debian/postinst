@@ -113,10 +113,8 @@ case "$1" in
             port = 9090
         }
     }
-    {
-        sctp {
-            enabled = true
-        }
+    sctp {
+        enabled = true
     }
     websockets {
         enabled = true
